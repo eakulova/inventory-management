@@ -13,17 +13,18 @@ import java.math.BigDecimal;
 @Accessors(chain = true)
 public class ProductCreateRequest {
 
-    @NotBlank
+    @NotBlank(message = "field 'name' must be filled")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "field 'brand' must be filled")
     private String brand;
 
-    @NotNull
-    @PositiveOrZero
-    @Digits(integer = Integer.MAX_VALUE, fraction = 2)
+    @NotNull(message = "field 'price' mustn't be null")
+    @PositiveOrZero(message = "field 'price' must be greater or equal to 0")
+    @Digits(integer = Integer.MAX_VALUE, fraction = 2,
+            message = "field 'price' must have 2 fraction digits")
     private BigDecimal price;
 
-    @PositiveOrZero
+    @PositiveOrZero(message = "field 'quatnity' must be greater or equal to 0")
     private long quantity;
 }
