@@ -1,4 +1,4 @@
-package com.align.product.manager;
+package com.align.product.manager.exception;
 
 public class ProductNotFoundException extends RuntimeException {
 

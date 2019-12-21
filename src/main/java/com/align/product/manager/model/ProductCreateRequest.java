@@ -1,4 +1,4 @@
-package com.align.product.manager;
+package com.align.product.manager.model;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -11,10 +11,7 @@ import java.math.BigDecimal;
 
 @Data
 @Accessors(chain = true)
-public class ProductDto {
-
-    @NotNull(message = "field 'id' mustn't be null")
-    private Long id;
+public class ProductCreateRequest {
 
     @NotBlank(message = "field 'name' must be filled")
     private String name;

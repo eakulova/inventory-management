@@ -1,7 +1,7 @@
 package com.align.product.manager.util;
 
-import com.align.product.manager.Product;
-import com.align.product.manager.ProductRepository;
+import com.align.product.manager.entity.Product;
+import com.align.product.manager.repository.ProductRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,16 +18,10 @@ public class ProductRepositoryMock implements ProductRepository {
     private AtomicLong idGenerator = new AtomicLong();
 
     @Override
-    public List<Product> findByName(String name) {
+    public List<Product> findByNameAndBrand(String name, String brand) {
         return productMap.values().stream()
-                .filter(product -> product.getName().equals(name))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Product> findByBrand(String brand) {
-        return productMap.values().stream()
-                .filter(product -> product.getBrand().equals(brand))
+                .filter(product -> brand == null || product.getBrand().equals(brand))
+                .filter(product -> name == null || product.getName().equals(name))
                 .collect(Collectors.toList());
     }
 

@@ -1,9 +1,18 @@
 package com.align.product.manager;
 
+import com.align.product.manager.configuration.ProductMapper;
+import com.align.product.manager.entity.Product;
+import com.align.product.manager.exception.ProductNotFoundException;
+import com.align.product.manager.model.ProductCreateRequest;
+import com.align.product.manager.model.ProductDto;
+import com.align.product.manager.repository.ProductRepository;
+import com.align.product.manager.service.ProductService;
+import com.align.product.manager.service.ProductServiceImpl;
 import com.align.product.manager.util.ProductRepositoryMock;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,6 +23,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(SpringExtension.class)
 class ProductServiceImplTest {
 
     private ProductRepository productRepository;
@@ -23,7 +33,7 @@ class ProductServiceImplTest {
     @BeforeEach
     void setUp() {
         productRepository = new ProductRepositoryMock();
-        productService = new ProductServiceImpl(productRepository, new DefaultMapperFactory.Builder().build());
+        productService = new ProductServiceImpl(productRepository, new ProductMapper());
     }
 
     @Test
@@ -103,21 +113,30 @@ class ProductServiceImplTest {
     void shouldReturnProductsByName() {
         prepareProducts();
         String name = "product1";
-        List<ProductDto> products = productService.getProductsByName(name);
-        assertAll(
-                () -> assertThat(products, hasSize(1)),
-                () -> assertThat(products.get(0).getName(), is(name))
-        );
+        List<ProductDto> products = productService.findProductsByNameAndBrand(name, null);
+        assertThat(products, hasSize(1));
+        assertThat(products.get(0).getName(), is(name));
     }
 
     @Test
     void shouldReturnProductsByBrand() {
         prepareProducts();
         String brand = "brand1";
-        List<ProductDto> products = productService.getProductsByBrand(brand);
+        List<ProductDto> products = productService.findProductsByNameAndBrand(null, brand);
+        assertThat(products, hasSize(1));
+        assertThat(products.get(0).getBrand(), is(brand));
+    }
+
+    @Test
+    void shouldReturnProductsByNameAndBrand() {
+        prepareProducts();
+        String brand = "brand1";
+        String name = "product1";
+        List<ProductDto> products = productService.findProductsByNameAndBrand(name, brand);
+        assertThat(products, hasSize(1));
         assertAll(
-                () -> assertThat(products, hasSize(1)),
-                () -> assertThat(products.get(0).getBrand(), is(brand))
+                () -> assertThat(products.get(0).getBrand(), is(brand)),
+                () -> assertThat(products.get(0).getName(), is(name))
         );
     }
 

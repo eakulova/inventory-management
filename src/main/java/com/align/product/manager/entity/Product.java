@@ -1,4 +1,4 @@
-package com.align.product.manager;
+package com.align.product.manager.entity;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

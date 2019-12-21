@@ -1,8 +1,13 @@
-package com.align.product.manager;
+package com.align.product.manager.service;
 
+import com.align.product.manager.configuration.ProductMapper;
+import com.align.product.manager.entity.Product;
+import com.align.product.manager.exception.ProductNotFoundException;
+import com.align.product.manager.model.ProductCreateRequest;
+import com.align.product.manager.model.ProductDto;
+import com.align.product.manager.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MapperFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,49 +19,34 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository repository;
 
-    private final MapperFactory mapperFactory;
+    private final ProductMapper  mapperFacade;
 
     @Override
     public List<ProductDto> getAllProducts() {
         return repository.findAll().stream()
-                .map(this::toProductDto)
+                .map(product -> mapperFacade.map(product, ProductDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<ProductDto> getAllLeftovers() {
-        //TODO: add paging + to repository
         return repository.findAll().stream()
                 .filter(product -> product.getQuantity() <= 5)
-                .map(this::toProductDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProductDto> getProductsByName(String name) {
-        return repository.findByName(name).stream()
-                .map(this::toProductDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProductDto> getProductsByBrand(String brand) {
-        return repository.findByBrand(brand).stream()
-                .map(this::toProductDto)
+                .map(product -> mapperFacade.map(product, ProductDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
     public ProductDto createNewProduct(ProductCreateRequest productCreateRequest) {
-        Product createdProduct = repository.save(toProductFromRequest(productCreateRequest));
-        return toProductDto(createdProduct);
+        Product createdProduct = repository.save(mapperFacade.map(productCreateRequest, Product.class));
+        return mapperFacade.map(createdProduct, ProductDto.class);
     }
 
     @Override
     public ProductDto updateProduct(ProductDto productDto) {
         checkProductExistence(productDto.getId());
-         Product updatedProduct = repository.save(toProductFromDto(productDto));
-         return toProductDto(updatedProduct);
+        Product updatedProduct = repository.save(mapperFacade.map(productDto, Product.class));
+        return mapperFacade.map(updatedProduct, ProductDto.class);
     }
 
     @Override
@@ -65,31 +55,38 @@ public class ProductServiceImpl implements ProductService {
         repository.deleteById(productId);
     }
 
+    @Override
+    public List<ProductDto> findProductsByNameAndBrand(String name, String brand) {
+        return repository.findByNameAndBrand(name, brand).stream()
+                .map(product -> mapperFacade.map(product, ProductDto.class))
+                .collect(Collectors.toList());
+    }
+
     private void checkProductExistence(Long id) {
         repository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
 
-    //TODO: to mapper class
+    /*//TODO: to mapper class
     private Product toProductFromRequest(ProductCreateRequest productCreateRequest) {
-        mapperFactory.classMap(ProductCreateRequest.class, Product.class);
-        MapperFacade mapper = mapperFactory.getMapperFacade();
+        mapperFacade.classMap(ProductCreateRequest.class, Product.class);
+        MapperFacade mapper = mapperFacade.getMapperFacade();
 
         return mapper.map(productCreateRequest, Product.class);
     }
 
     private Product toProductFromDto(ProductDto productDto) {
-        mapperFactory.classMap(ProductDto.class, Product.class);
-        MapperFacade mapper = mapperFactory.getMapperFacade();
+        mapperFacade.classMap(ProductDto.class, Product.class);
+        MapperFacade mapper = mapperFacade.getMapperFacade();
 
         return mapper.map(productDto, Product.class);
     }
 
     private ProductDto toProductDto(Product product) {
-        mapperFactory.classMap(Product.class, ProductDto.class);
-        MapperFacade mapper = mapperFactory.getMapperFacade();
+        mapperFacade.classMap(Product.class, ProductDto.class);
+        MapperFacade mapper = mapperFacade.getMapperFacade();
 
         return mapper.map(product, ProductDto.class);
-    }
+    }*/
 }

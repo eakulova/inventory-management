@@ -1,5 +1,7 @@
 package com.align.product.manager;
 
+import com.align.product.manager.model.ProductCreateRequest;
+import com.align.product.manager.model.ProductDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
