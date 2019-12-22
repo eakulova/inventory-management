@@ -102,6 +102,73 @@ class ProductControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void shouldReturnUnauthorisedExceptionWhileGettingListOfProducts() throws Exception {
+        mockMvc.perform(get("/products"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldReturnUnauthorisedExceptionWhileGettingListOfProductsByParam() throws Exception {
+        mockMvc.perform(get("/products/search?name=watch&brand=casio"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldReturnUnauthorisedExceptionWhileCreatingNewProduct() throws Exception {
+        String request = readJson("/product-create-request.json");
+
+        mockMvc.perform(post("/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldReturnUnauthorisedExceptionWhileUpdatingProduct() throws Exception {
+        String request = readJson("/product-update-request.json");
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldReturnUnauthorisedExceptionWhileDeletingProduct() throws Exception {
+        mockMvc.perform(delete("/products/1"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @WithMockUser("USER")
+    @Test
+    void shouldReturnForbiddenExceptionWhileCreatingNewProduct() throws Exception {
+        String request = readJson("/product-create-request.json");
+
+        mockMvc.perform(post("/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request))
+                .andExpect(status().isForbidden());
+    }
+
+    @WithMockUser("USER")
+    @Test
+    void shouldReturnForbiddenExceptionWhileUpdatingProduct() throws Exception {
+        String request = readJson("/product-update-request.json");
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request))
+                .andExpect(status().isForbidden());
+    }
+
+    @WithMockUser("USER")
+    @Test
+    void shouldReturnForbiddenExceptionWhileDeletingProduct() throws Exception {
+        mockMvc.perform(delete("/products/1"))
+                .andExpect(status().isForbidden());
+    }
+
     private ProductDto createProduct() {
         return new ProductDto()
                 .setId(1L)
@@ -110,8 +177,6 @@ class ProductControllerTest {
                 .setPrice(BigDecimal.ONE)
                 .setQuantity(1);
     }
-
-    //TODO: test unauthorized + forbidden
 
     private String readJson(String fileName) throws IOException {
         return IOUtils.toString(this.getClass().getResourceAsStream(fileName), StandardCharsets.UTF_8);

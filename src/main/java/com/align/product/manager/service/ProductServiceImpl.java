@@ -30,7 +30,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> getAllLeftovers() {
         return repository.findAll().stream()
-                .filter(product -> product.getQuantity() <= 5)
+                .filter(product -> product.getQuantity() < 5)
                 .map(product -> mapperFacade.map(product, ProductDto.class))
                 .collect(Collectors.toList());
     }

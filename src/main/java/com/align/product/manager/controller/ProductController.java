@@ -11,11 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-//TODO: security test
 //TODO: init data
 //TODO: Exception handler
-//TODO: java docs
-//TODO: swagger(?)
 //TODO: docker
 @Slf4j
 @RestController
@@ -25,12 +22,21 @@ public class ProductController {
 
     private final ProductService productService;
 
+    /**
+     * Get all products with quantity < 5
+     */
     @GetMapping
     public List<ProductDto> getLeftovers() {
         log.info("Request to get all leftovers");
         return productService.getAllLeftovers();
     }
 
+    /**
+     * Search products by name and/or brand
+     *
+     * @param name  name of product
+     * @param brand brand of product
+     */
     @GetMapping("/search")
     public List<ProductDto> getProductsByNameAndBrand(@RequestParam(required = false) String name,
                                                       @RequestParam(required = false) String brand) {
@@ -38,18 +44,37 @@ public class ProductController {
         return productService.findProductsByNameAndBrand(name, brand);
     }
 
+    /**
+     * Create new product
+     *
+     * @param request product to create
+     * @return created product
+     */
     @PostMapping
     public ProductDto createProduct(@RequestBody @Valid ProductCreateRequest request) {
         log.info("Request to create new product with name = {}", request.getName());
         return productService.createNewProduct(request);
     }
 
+    /**
+     * Update product
+     *
+     * @param product product to update
+     * @return updated product
+     * @throws com.align.product.manager.exception.ProductNotFoundException if there are no any products with such id
+     */
     @PutMapping
     public ProductDto updateProduct(@RequestBody ProductDto product) {
         log.info("Request to update product with id = {}", product.getId());
         return productService.updateProduct(product);
     }
 
+    /**
+     * Delete product by id
+     *
+     * @param productId id of product to delete
+     * @throws com.align.product.manager.exception.ProductNotFoundException if there are no any products with such id
+     */
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("{id}")
     public void deleteProduct(@PathVariable("id") long productId) {
