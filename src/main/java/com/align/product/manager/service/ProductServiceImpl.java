@@ -7,7 +7,6 @@ import com.align.product.manager.model.ProductCreateRequest;
 import com.align.product.manager.model.ProductDto;
 import com.align.product.manager.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
-import ma.glasnost.orika.MapperFacade;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
