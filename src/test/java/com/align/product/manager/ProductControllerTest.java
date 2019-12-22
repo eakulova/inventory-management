@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -37,6 +38,7 @@ class ProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @WithMockUser("USER")
     @Test
     void shouldReturnListOfLeftovers() throws Exception {
         ProductDto product = createProduct();
@@ -50,6 +52,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$[0].id", is(1)));
     }
 
+    @WithMockUser("USER")
     @Test
     void shouldReturnProductsByNameAndBrand() throws Exception {
         ProductDto product = createProduct();
@@ -62,6 +65,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$[0].id", is(1)));
     }
 
+    @WithMockUser(value = "ADMIN", roles = "ADMIN")
     @Test
     void shouldCreateNewProject() throws Exception {
         String request = readJson("/product-create-request.json");
@@ -76,6 +80,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.id", is(1)));
     }
 
+    @WithMockUser(value = "ADMIN", roles = "ADMIN")
     @Test
     void shouldUpdateProject() throws Exception {
         String request = readJson("/product-update-request.json");
@@ -90,6 +95,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.id", is(1)));
     }
 
+    @WithMockUser(value = "ADMIN", roles = "ADMIN")
     @Test
     void shouldDeleteProject() throws Exception {
         mockMvc.perform(delete("/products/1"))
@@ -104,6 +110,8 @@ class ProductControllerTest {
                 .setPrice(BigDecimal.ONE)
                 .setQuantity(1);
     }
+
+    //TODO: test unauthorized + forbidden
 
     private String readJson(String fileName) throws IOException {
         return IOUtils.toString(this.getClass().getResourceAsStream(fileName), StandardCharsets.UTF_8);
