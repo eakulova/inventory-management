@@ -18,7 +18,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository repository;
 
-    private final ProductMapper  mapperFacade;
+    private final ProductMapper mapperFacade;
 
     @Override
     public List<ProductDto> getAllProducts() {
@@ -65,27 +65,4 @@ public class ProductServiceImpl implements ProductService {
         repository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
     }
-
-
-    /*//TODO: to mapper class
-    private Product toProductFromRequest(ProductCreateRequest productCreateRequest) {
-        mapperFacade.classMap(ProductCreateRequest.class, Product.class);
-        MapperFacade mapper = mapperFacade.getMapperFacade();
-
-        return mapper.map(productCreateRequest, Product.class);
-    }
-
-    private Product toProductFromDto(ProductDto productDto) {
-        mapperFacade.classMap(ProductDto.class, Product.class);
-        MapperFacade mapper = mapperFacade.getMapperFacade();
-
-        return mapper.map(productDto, Product.class);
-    }
-
-    private ProductDto toProductDto(Product product) {
-        mapperFacade.classMap(Product.class, ProductDto.class);
-        MapperFacade mapper = mapperFacade.getMapperFacade();
-
-        return mapper.map(product, ProductDto.class);
-    }*/
 }
