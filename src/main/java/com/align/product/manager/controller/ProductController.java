@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-//TODO: init data
 //TODO: Exception handler
 //TODO: docker
 @Slf4j
@@ -25,7 +24,7 @@ public class ProductController {
     /**
      * Get all products with quantity < 5
      */
-    @GetMapping
+    @GetMapping("/leftovers")
     public List<ProductDto> getLeftovers() {
         log.info("Request to get all leftovers");
         return productService.getAllLeftovers();
@@ -37,7 +36,7 @@ public class ProductController {
      * @param name  name of product
      * @param brand brand of product
      */
-    @GetMapping("/search")
+    @GetMapping
     public List<ProductDto> getProductsByNameAndBrand(@RequestParam(required = false) String name,
                                                       @RequestParam(required = false) String brand) {
         log.info("Request to get product by name = {} and brand = {}", name, brand);

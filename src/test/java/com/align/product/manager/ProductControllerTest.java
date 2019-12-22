@@ -46,7 +46,7 @@ class ProductControllerTest {
         when(productService.getAllLeftovers())
                 .thenReturn(Collections.singletonList(product));
 
-        mockMvc.perform(get("/products"))
+        mockMvc.perform(get("/products/leftovers"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(1)));
@@ -59,7 +59,7 @@ class ProductControllerTest {
         when(productService.findProductsByNameAndBrand(any(), any()))
                 .thenReturn(Collections.singletonList(product));
 
-        mockMvc.perform(get("/products/search?name=watch&brand=casio"))
+        mockMvc.perform(get("/products?name=watch&brand=casio"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(1)));
@@ -104,13 +104,13 @@ class ProductControllerTest {
 
     @Test
     void shouldReturnUnauthorisedExceptionWhileGettingListOfProducts() throws Exception {
-        mockMvc.perform(get("/products"))
+        mockMvc.perform(get("/products/leftovers"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void shouldReturnUnauthorisedExceptionWhileGettingListOfProductsByParam() throws Exception {
-        mockMvc.perform(get("/products/search?name=watch&brand=casio"))
+        mockMvc.perform(get("/products?name=watch&brand=casio"))
                 .andExpect(status().isUnauthorized());
     }
 
