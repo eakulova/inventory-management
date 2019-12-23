@@ -7,7 +7,7 @@ H2 database is used to store data.
 
 _There are two ways to run the application:_
 1) From command line. 
-Maven and jre 1.8 or higher must be installed. 
+Maven and JDK 1.8 or higher must be installed. 
     
      `mvn spring-boot:run`
 2) By using docker.
